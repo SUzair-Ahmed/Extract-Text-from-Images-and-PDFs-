@@ -1,0 +1,133 @@
+{% block content %}
+{% if user.is_authenticated %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .upload-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .custom-file-upload {
+        display: inline-block;
+        padding: 10px 20px;
+        cursor: pointer;
+        border: 2px solid #6c63ff;
+        border-radius: 5px;
+        background-color: #6c63ff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .custom-file-upload:hover {
+        background-color: #5a52d6;
+        border-color: #5a52d6;
+    }
+
+    #file-upload {
+        display: none;
+    }
+
+    .image-preview {
+        margin-top: 20px;
+    }
+
+    .image-preview img {
+        max-width: 100%;
+        max-height: 300px;
+        display: block;
+        border-radius: 10px;
+    }
+
+    .logout-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #ff4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .logout-button:hover {
+        background-color: #e60000;
+    }
+
+    .upload-container form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .upload-container input[type="file"] {
+        margin-bottom: 10px;
+    }
+
+    .upload-container button[type="submit"] {
+        padding: 10px 20px;
+        background-color: #6c63ff;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .upload-container button[type="submit"]:hover {
+        background-color: #5a52d6;
+    }
+</style>
+
+<body>
+    <button class="logout-button">
+        <a style="text-decoration: none; color: white;" href="{% url 'logout' %}">Logout</a>
+    </button>
+    {{user.username}}
+    <div class="container">
+        <div class="upload-container">
+            <h2>Upload Image or PDF</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Upload</button>
+            </form>
+
+            {% if uploaded_file_url %}
+            <center>
+            <div class="image-preview">
+                <h3>Uploaded File:</h3>
+                {% if preview_image_url %}
+                    <img src="{{ preview_image_url }}" alt="Preview Image">
+                {% else %}
+                    <img src="{{ uploaded_file_url }}" alt="Uploaded Image">
+                {% endif %}
+                <h3>Extracted Text:</h3>
+                <p>{{ extracted_text }}</p>
+            </div>
+        </center>
+            {% endif %}
+        </div>
+    </div>
+{% else %}
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'signup' %}">Signup</a>
+{% endif %}
+</body>
+{% endblock %}
